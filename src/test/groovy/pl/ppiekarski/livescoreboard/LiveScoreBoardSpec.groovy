@@ -58,7 +58,6 @@ class LiveScoreBoardSpec extends Specification {
         result.exceptionOrNull().message == "Score must be non-negative"
     }
 
-
     def "should finish proper match"() {
         given: "some matches are started"
         liveScoreBoard.startMatch(startMatchCommand1).getOrNull()
@@ -69,5 +68,27 @@ class LiveScoreBoardSpec extends Specification {
         then:
         result.isSuccess()
         liveScoreBoard.getSummary() == [new MatchDto(HOME_TEAM_NAME, AWAY_TEAM_NAME, 0, 0)]
+    }
+
+    def "should fail updating score for finished or non existing match"() {
+        given:
+        MatchId matchId1 = liveScoreBoard.startMatch(startMatchCommand1).getOrNull()
+        liveScoreBoard.finishMatch(matchId1)
+        when:
+        def result = liveScoreBoard.updateScore(new UpdateScoreCommand(matchId1, 1, 0))
+        then:
+        result.isFailure()
+        result.exceptionOrNull().message.startsWith("Match not found by id")
+    }
+
+    def "should fail finishing finished or non existing match"() {
+        given:
+        MatchId matchId1 = liveScoreBoard.startMatch(startMatchCommand1).getOrNull()
+        liveScoreBoard.finishMatch(matchId1)
+        when:
+        def result = liveScoreBoard.finishMatch(matchId1)
+        then:
+        result.isFailure()
+        result.exceptionOrNull().message.startsWith("Match not found by id")
     }
 }

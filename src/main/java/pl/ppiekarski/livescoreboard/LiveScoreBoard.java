@@ -21,19 +21,30 @@ class LiveScoreBoard {
     public Result<MatchDto> updateScore(UpdateScoreCommand updateScoreCommand) {
         return Result.runCatching(() -> {
             var match = liveMatches.get(updateScoreCommand.matchId());
-            if (match == null) {
-                throw new IllegalArgumentException("Game not found by" + updateScoreCommand.matchId().toString());
-            }
+            assertMatchFoundById(updateScoreCommand.matchId(), match);
             match.setNewScore(new SoccerScore(updateScoreCommand.homeScore(), updateScoreCommand.awayScore()));
             return match.toDto();
         });
     }
 
+    Result<MatchDto> finishMatch(MatchId matchId) {
+        return Result.runCatching(() -> {
+            var removed = liveMatches.remove(matchId);
+            assertMatchFoundById(matchId, removed);
+            return removed.toDto();
+        });
+    }
+
     List<MatchDto> getSummary() {
-        return
-                liveMatches.values()
+        return liveMatches.values()
                 .stream()
                 .map(Match::toDto)
                 .toList();
+    }
+
+    private static void assertMatchFoundById(MatchId matchId, Match match) {
+        if (match == null) {
+            throw new MatchNotFoundException(matchId);
+        }
     }
 }

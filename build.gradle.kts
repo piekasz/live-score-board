@@ -1,6 +1,7 @@
 plugins {
     java
     groovy
+    id("com.diffplug.spotless") version "7.0.4"
 }
 
 group = "pl.ppiekarski"
@@ -24,4 +25,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        target("**/*.java") // Target all Java files
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }

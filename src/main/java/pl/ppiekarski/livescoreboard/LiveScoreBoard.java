@@ -4,15 +4,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import pl.ppiekarski.livescoreboard.api.MatchDto;
+import pl.ppiekarski.livescoreboard.api.StartMatchCommand;
+import pl.ppiekarski.livescoreboard.api.UpdateScoreCommand;
 
-class LiveScoreBoard {
+public class LiveScoreBoard {
 
     private final Map<MatchId, Match> liveMatches = new ConcurrentHashMap<>();
 
-    Result<MatchId> startMatch(StartMatchCommand startMatchCommand) {
+    public Result<MatchId> startMatch(StartMatchCommand startMatchCommand) {
         return Result.runCatching(() -> {
             Team home = new Team(startMatchCommand.homeTeamName());
             Team away = new Team(startMatchCommand.awayTeamName());
+
             var match = new Match(home, away);
             liveMatches.put(match.matchId(), match);
             return match.matchId();
@@ -28,7 +32,7 @@ class LiveScoreBoard {
         });
     }
 
-    Result<MatchDto> finishMatch(MatchId matchId) {
+    public Result<MatchDto> finishMatch(MatchId matchId) {
         return Result.runCatching(() -> {
             var removed = liveMatches.remove(matchId);
             assertMatchFoundById(matchId, removed);
@@ -36,13 +40,13 @@ class LiveScoreBoard {
         });
     }
 
-    List<MatchDto> getSummary() {
+    public List<MatchDto> getSummary() {
         return liveMatches.values()
                 .stream()
                 .sorted(Comparator
                         .comparingInt(Match::getTotalGoals).reversed()
                         .thenComparing(Match::getSequence, Comparator.reverseOrder())
-                )
+                ) // TODO consider make it configurable - maybe MatchSorter extends Comparator<MatchDto> to make it public - then sort after toDto mapping
                 .map(Match::toDto)
                 .toList();
     }

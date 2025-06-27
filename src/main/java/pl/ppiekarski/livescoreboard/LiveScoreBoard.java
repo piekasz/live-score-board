@@ -8,12 +8,25 @@ class LiveScoreBoard {
 
     private final Map<MatchId, Match> liveMatches = new ConcurrentHashMap<>();
 
-    void startMatch(String homeTeamName, String awayTeamName) {
-        var homeTeam = new Team(homeTeamName);
-        var awayTeam = new Team(awayTeamName);
+    Result<MatchId> startMatch(StartMatchCommand startMatchCommand) {
+        return Result.runCatching(() -> {
+            Team home = new Team(startMatchCommand.homeTeamName());
+            Team away = new Team(startMatchCommand.awayTeamName());
+            var match = new Match(home, away);
+            liveMatches.put(match.matchId(), match);
+            return match.matchId();
+        });
+    }
 
-        var match = new Match(homeTeam, awayTeam);
-        liveMatches.put(match.matchId(), match);
+    public Result<MatchDto> updateScore(UpdateScoreCommand updateScoreCommand) {
+        return Result.runCatching(() -> {
+            var match = liveMatches.get(updateScoreCommand.matchId());
+            if (match == null) {
+                throw new IllegalArgumentException("Game not found by" + updateScoreCommand.matchId().toString());
+            }
+            match.setNewScore(new SoccerScore(updateScoreCommand.homeScore(), updateScoreCommand.awayScore()));
+            return match.toDto();
+        });
     }
 
     List<MatchDto> getSummary() {
@@ -21,8 +34,6 @@ class LiveScoreBoard {
                 liveMatches.values()
                 .stream()
                 .map(Match::toDto)
-                .toList()
-        ;
+                .toList();
     }
-
 }

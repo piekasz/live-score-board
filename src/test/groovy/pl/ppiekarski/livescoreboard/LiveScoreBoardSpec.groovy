@@ -57,4 +57,17 @@ class LiveScoreBoardSpec extends Specification {
         result.isFailure()
         result.exceptionOrNull().message == "Score must be non-negative"
     }
+
+
+    def "should finish proper match"() {
+        given: "some matches are started"
+        liveScoreBoard.startMatch(startMatchCommand1).getOrNull()
+        and: "match to be finished is also started"
+        MatchId matchId = liveScoreBoard.startMatch(startMatchCommand2).getOrNull()
+        when:
+        def result = liveScoreBoard.finishMatch(matchId)
+        then:
+        result.isSuccess()
+        liveScoreBoard.getSummary() == [new MatchDto(HOME_TEAM_NAME, AWAY_TEAM_NAME, 0, 0)]
+    }
 }

@@ -1,6 +1,6 @@
 package pl.ppiekarski.livescoreboard;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,8 +16,13 @@ class LiveScoreBoard {
         liveMatches.put(match.matchId(), match);
     }
 
-    Collection<Match> getSummary() {
-        return liveMatches.values();
+    List<MatchDto> getSummary() {
+        return
+                liveMatches.values()
+                .stream()
+                .map(Match::toDto)
+                .toList()
+        ;
     }
 
 }

@@ -43,4 +43,8 @@ The summary would provide with the following information:
 5. Germany 2 - France 2
 
 # Own Thoughts, Conclusions etc...
-TODO
+- The library's public API should be minimal and easy to use
+- It is library - API should be stable and independent to potential impl details changes in the future - OCP
+
+## Short Project Description
+Gradle Java 21 with no external dependencies - only spock for testing.

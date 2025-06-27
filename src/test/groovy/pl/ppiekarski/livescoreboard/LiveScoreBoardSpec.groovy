@@ -91,4 +91,38 @@ class LiveScoreBoardSpec extends Specification {
         result.isFailure()
         result.exceptionOrNull().message.startsWith("Match not found by id")
     }
+
+    def "should return match summary with live matches in proper order"() {
+        given: "some matches with different scores"
+        var matchId = liveScoreBoard.startMatch(new StartMatchCommand("Mexico", "Canada"))
+                .getOrNull()
+        liveScoreBoard.updateScore(new UpdateScoreCommand(matchId, 0, 5))
+
+        matchId = liveScoreBoard.startMatch(new StartMatchCommand("Spain", "Brazil"))
+                .getOrNull()
+        liveScoreBoard.updateScore(new UpdateScoreCommand(matchId, 10, 2))
+
+        matchId = liveScoreBoard.startMatch(new StartMatchCommand("Germany", "France"))
+                .getOrNull()
+        liveScoreBoard.updateScore(new UpdateScoreCommand(matchId, 2, 2))
+
+        matchId = liveScoreBoard.startMatch(new StartMatchCommand("Uruguay", "Italy"))
+                .getOrNull()
+        liveScoreBoard.updateScore(new UpdateScoreCommand(matchId, 6, 6))
+
+        matchId = liveScoreBoard.startMatch(new StartMatchCommand("Argentina", "Australia"))
+                .getOrNull()
+        liveScoreBoard.updateScore(new UpdateScoreCommand(matchId, 3, 1))
+
+        when:
+        def summaries = liveScoreBoard.getSummary()
+
+        then:
+        summaries.size() == 5
+        summaries[0] == new MatchDto("Uruguay", "Italy", 6, 6)
+        summaries[1] == new MatchDto("Spain", "Brazil", 10, 2)
+        summaries[2] == new MatchDto("Mexico", "Canada", 0, 5)
+        summaries[3] == new MatchDto("Argentina", "Australia", 3, 1)
+        summaries[4] == new MatchDto("Germany", "France", 2, 2)
+    }
 }

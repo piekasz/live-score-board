@@ -7,4 +7,8 @@ record SoccerScore(int home, int away) {
             throw new IllegalArgumentException("Score must be non-negative");
         }
     }
+
+    public int totalGoals() {
+        return home + away;
+    }
 }

@@ -10,6 +10,6 @@ class LiveScoreBoardSpec extends Specification {
         when:
         liveScoreBoard.startMatch("teamA", "teamB")
         then: "started match is in liveScoreBoard"
-        liveScoreBoard.getSummary().containsMatch("teamA", "teamB")
+        liveScoreBoard.getSummary().any {it.homeTeam().name() == "teamA" && it.awayTeam().name() == "teamB" }
     }
 }

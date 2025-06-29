@@ -138,6 +138,7 @@ class LiveScoreBoardSpec extends Specification {
     def "should be able to start second DIFFERENT match between same teams"() {
         given:
         def matchIdResult1 = liveScoreBoard.startMatch(startMatchCommand1)
+        liveScoreBoard.finishMatch(matchIdResult1.getOrNull())
         when:
         def matchIdResult2 = liveScoreBoard.startMatch(startMatchCommand1)
         then: "matches are different matches"

@@ -28,4 +28,4 @@ as usage example
   then MatchDto should also contain MatchId since we want to distinguish France-Italy 1st and 2nd game
 * Team names could be validated (at least if not blank)
 * there could be some mechanism to add some rules, i.e. like mentioned earlier - 
-"one team can play one match at a time" - **NOT DONE**
+"one team can play one match at a time"

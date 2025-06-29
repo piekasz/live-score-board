@@ -21,15 +21,14 @@ sealed class LiveScoreBoard permits WorldCupScoreBoard {
         return Result.runCatching(() -> {
             Team home = new Team(startMatchCommand.homeTeamName());
             Team away = new Team(startMatchCommand.awayTeamName());
-            return matchStorage.save(new MatchStorage.NewMatch(home, away));
+            return matchStorage.insert(new MatchStorage.NewMatch(home, away));
         });
     }
 
     public Result<MatchDto> updateScore(UpdateScoreCommand updateScoreCommand) {
         return Result.runCatching(() -> {
-            var match = matchStorage.findById(updateScoreCommand.matchId());
+            var match = matchStorage.updateScore(updateScoreCommand.matchId(), new SoccerScore(updateScoreCommand.homeScore(), updateScoreCommand.awayScore()));
             assertMatchFoundById(updateScoreCommand.matchId(), match);
-            match.setNewScore(new SoccerScore(updateScoreCommand.homeScore(), updateScoreCommand.awayScore()));
             return match.toDto();
         });
     }

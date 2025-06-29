@@ -43,4 +43,12 @@ class Match {
     public long getSequence() {
         return sequence;
     }
+
+    public Team awayTeam() {
+        return awayTeam;
+    }
+
+    public Team homeTeam() {
+        return homeTeam;
+    }
 }

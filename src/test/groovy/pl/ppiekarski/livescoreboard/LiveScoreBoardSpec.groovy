@@ -14,7 +14,7 @@ class LiveScoreBoardSpec extends Specification {
     public static final String OTHER_AWAY_TEAM_NAME = "teamD"
     public static final startMatchCommand2 = new StartMatchCommand(OTHER_HOME_TEAM_NAME, OTHER_AWAY_TEAM_NAME)
 
-    def liveScoreBoard = new LiveScoreBoard()
+    def liveScoreBoard = new WorldCupScoreBoard()
 
     def "should start a match and store it in liveScoreBoard"() {
         when:

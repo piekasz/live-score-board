@@ -2,30 +2,29 @@ package pl.ppiekarski.livescoreboard;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import pl.ppiekarski.livescoreboard.api.MatchDto;
 import pl.ppiekarski.livescoreboard.api.StartMatchCommand;
 import pl.ppiekarski.livescoreboard.api.UpdateScoreCommand;
 
-public class LiveScoreBoard {
+sealed class LiveScoreBoard permits WorldCupScoreBoard {
 
-    private final Map<MatchId, Match> liveMatches = new ConcurrentHashMap<>();
+    private final MatchStorage matchStorage;
+
+    protected LiveScoreBoard(MatchStorage matchStorage) {
+        this.matchStorage = matchStorage;
+    }
 
     public Result<MatchId> startMatch(StartMatchCommand startMatchCommand) {
         return Result.runCatching(() -> {
             Team home = new Team(startMatchCommand.homeTeamName());
             Team away = new Team(startMatchCommand.awayTeamName());
-
-            var match = new Match(home, away);
-            liveMatches.put(match.matchId(), match);
-            return match.matchId();
+            return matchStorage.save(new MatchStorage.NewMatch(home, away));
         });
     }
 
     public Result<MatchDto> updateScore(UpdateScoreCommand updateScoreCommand) {
         return Result.runCatching(() -> {
-            var match = liveMatches.get(updateScoreCommand.matchId());
+            var match = matchStorage.findById(updateScoreCommand.matchId());
             assertMatchFoundById(updateScoreCommand.matchId(), match);
             match.setNewScore(new SoccerScore(updateScoreCommand.homeScore(), updateScoreCommand.awayScore()));
             return match.toDto();
@@ -34,14 +33,14 @@ public class LiveScoreBoard {
 
     public Result<MatchDto> finishMatch(MatchId matchId) {
         return Result.runCatching(() -> {
-            var removed = liveMatches.remove(matchId);
+            var removed = matchStorage.remove(matchId);
             assertMatchFoundById(matchId, removed);
             return removed.toDto();
         });
     }
 
     public List<MatchDto> getSummary() {
-        return liveMatches.values()
+        return matchStorage.findAll()
                 .stream()
                 .sorted(Comparator
                         .comparingInt(Match::getTotalGoals).reversed()

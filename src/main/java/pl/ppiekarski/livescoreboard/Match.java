@@ -1,7 +1,6 @@
 package pl.ppiekarski.livescoreboard;
 
 
-import java.util.concurrent.atomic.AtomicLong;
 import pl.ppiekarski.livescoreboard.api.MatchDto;
 
 /**
@@ -10,7 +9,6 @@ import pl.ppiekarski.livescoreboard.api.MatchDto;
  */
 class Match {
     public static final SoccerScore START_GAME_SCORE = new SoccerScore(0, 0);
-    private static final AtomicLong SEQUENCE_COUNTER = new AtomicLong();
 
     private final MatchId matchId;
     private final Team homeTeam;
@@ -18,8 +16,8 @@ class Match {
     private SoccerScore score;
     private final long sequence;
 
-    Match(Team homeTeam, Team awayTeam) {
-        this.sequence = SEQUENCE_COUNTER.getAndIncrement();
+    Match(long sequence, Team homeTeam, Team awayTeam) {
+        this.sequence = sequence;
         this.matchId = new SequenceBasedMatchId(sequence);
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;

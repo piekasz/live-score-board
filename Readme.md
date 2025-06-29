@@ -1,46 +1,28 @@
+<!-- TOC -->
+* [Task Description](#task-description)
+* [Own Thoughts, Conclusions etc...](#own-thoughts-conclusions-etc)
+  * [Short Project Description](#short-project-description)
+  * [Usage Example:](#usage-example)
+  * [Open questions:](#open-questions)
+<!-- TOC -->
 # Task Description
-## Instructions:
-Please provide the implementation of the Football World Cup Score Board as a simple
-library.
-
-## Guidelines:
-• Keep it simple. Stick to the requirements and try to implement the simplest
-solution you can possibly think of that works and don't forget about edge cases.
-
-• Use an in-memory store solution (for example just use collections to store
-the information you might require).
-
-• We are NOT looking for a REST API, a Web Service or Microservice. Just
-a simple implementation.
-
-• Focus on Quality. Use Test-Driven Development (TDD), pay attention to
-OO design, Clean Code and adherence to SOLID principles.
-
-### Football World Cup Score Board:
-Develop a new Live Football World Cup Score Board that shows matches and scores.
-
-The boards support the following operations:
-1. Start a game. When a game starts, it should capture (being initial score 0-0)
-   a. Home team
-   b. Away Team
-2. Finish a game. It will remove a match from the scoreboard.
-3. Update score. Receiving the pair score; home team score and away team score
-   updates a game score
-4. Get a summary of games by total score. Those games with the same total score
-   will be returned ordered by the most recently added to our system.
-
-As an example, being the current data in the system:
-a. Mexico - Canada: 0 – 5 \
-b. Spain - Brazil: 10 – 2 \
-c. Germany - France: 2 – 2 \
-d. Uruguay - Italy: 6 – 6 \
-e. Argentina - Australia: 3 - 1 \
-The summary would provide with the following information:
-1. Uruguay 6 - Italy 6
-2. Spain 10 - Brazil 2
-3. Mexico 0 - Canada 5
-4. Argentina 3 - Australia 1
-5. Germany 2 - France 2
+[TaskDescription.md](TaskDescription.md)
 
 # Own Thoughts, Conclusions etc...
-TODO
+- The library's public API should be minimal and easy to use
+- It is library - API should be stable and independent to potential impl details changes in the future - OCP
+
+## Short Project Description
+Gradle Java 21 with no external dependencies - only spock for testing.
+
+## Usage Example:
+[WorldCupScoreBoardExample.java](src%2Fmain%2Fjava%2Fpl%2Fppiekarski%2Flivescoreboard%2Fexample%2FWorldCupScoreBoardExample.java)\
+also check tests:
+[LiveScoreBoardSpec.groovy](src%2Ftest%2Fgroovy%2Fpl%2Fppiekarski%2Flivescoreboard%2FLiveScoreBoardSpec.groovy)
+## Open questions:
+* Teams can play each other more than once - MatchId should not be just teamNameBased
+  * Match is identified by MatchId, but MatchDto should be identified by all fields,
+  then MatchDto should also contain MatchId since we want to distinguish France-Italy 1st and 2nd game
+* Team names could be validated (at least if not blank)
+* there could be some mechanism to add some rules, i.e. like mentioned earlier - 
+"one team can play one match at a time"

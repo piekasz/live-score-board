@@ -9,9 +9,12 @@ import pl.ppiekarski.livescoreboard.api.UpdateScoreCommand;
 sealed class LiveScoreBoard permits WorldCupScoreBoard {
 
     private final MatchStorage matchStorage;
+    // TODO could be specific type like MatchSorter extends Comparator<MatchDto>
+    private final Comparator<Match> matchComparator;
 
-    protected LiveScoreBoard(MatchStorage matchStorage) {
+    protected LiveScoreBoard(MatchStorage matchStorage, Comparator<Match> matchComparator) {
         this.matchStorage = matchStorage;
+        this.matchComparator = matchComparator;
     }
 
     public Result<MatchId> startMatch(StartMatchCommand startMatchCommand) {
@@ -42,10 +45,7 @@ sealed class LiveScoreBoard permits WorldCupScoreBoard {
     public List<MatchDto> getSummary() {
         return matchStorage.findAll()
                 .stream()
-                .sorted(Comparator
-                        .comparingInt(Match::getTotalGoals).reversed()
-                        .thenComparing(Match::getSequence, Comparator.reverseOrder())
-                ) // TODO consider make it configurable - maybe MatchSorter extends Comparator<MatchDto> to make it public - then sort after toDto mapping
+                .sorted(matchComparator)
                 .map(Match::toDto)
                 .toList();
     }

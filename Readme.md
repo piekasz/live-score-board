@@ -2,7 +2,7 @@
 * [Task Description](#task-description)
 * [Own Thoughts, Conclusions etc...](#own-thoughts-conclusions-etc)
   * [Short Project Description](#short-project-description)
-  * [TODO](#todo-)
+  * [Usage Example:](#usage-example)
   * [Open questions:](#open-questions)
 <!-- TOC -->
 # Task Description
@@ -15,13 +15,10 @@
 ## Short Project Description
 Gradle Java 21 with no external dependencies - only spock for testing.
 
-## TODO 
-So far we manged to meet minimal requirements, but we still need to:
-1. refactor and crystallize what is the library's public API, and what should stay as internal
-2. consider if there could come out some new "common-sense" requirements (i.e. one team can play one match at a time)
-and how those could be handled to without changing the API
-3. Could add some usage example here in Readme, or just link the [LiveScoreBoardSpec.groovy](src%2Ftest%2Fgroovy%2Fpl%2Fppiekarski%2Flivescoreboard%2FLiveScoreBoardSpec.groovy)
-as usage example
+## Usage Example:
+[WorldCupScoreBoardExample.java](src%2Fmain%2Fjava%2Fpl%2Fppiekarski%2Flivescoreboard%2Fexample%2FWorldCupScoreBoardExample.java)\
+also check tests:
+[LiveScoreBoardSpec.groovy](src%2Ftest%2Fgroovy%2Fpl%2Fppiekarski%2Flivescoreboard%2FLiveScoreBoardSpec.groovy)
 ## Open questions:
 * Teams can play each other more than once - MatchId should not be just teamNameBased
   * Match is identified by MatchId, but MatchDto should be identified by all fields,

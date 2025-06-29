@@ -155,4 +155,17 @@ class LiveScoreBoardSpec extends Specification {
         result1.isFailure() && result1.exceptionOrNull().message == "Team name [ ] is not valid. Must not be empty"
         result2.isFailure()&& result2.exceptionOrNull().message == "Team name [null] is not valid. Must not be empty"
     }
+
+    def "should not start second match for team that is playing already"() {
+        given:
+        def matchIdResult1 = liveScoreBoard.startMatch(startMatchCommand1)
+        expect:
+        matchIdResult1.isSuccess()
+        when:
+        def matchIdResult2 = liveScoreBoard.startMatch(new StartMatchCommand(startMatchCommand1.awayTeamName(), OTHER_AWAY_TEAM_NAME))
+        then: "match was not started"
+        matchIdResult2.isFailure()
+        matchIdResult2.exceptionOrNull().message == "At least one of the teams is already playing now"
+        liveScoreBoard.getSummary() == [new MatchDto(matchIdResult1.getOrNull(), HOME_TEAM_NAME, AWAY_TEAM_NAME, 0, 0)]
+    }
 }
